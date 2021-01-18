@@ -11,22 +11,18 @@ import javax.persistence.Id;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false)
     @NotNull
     private String genre;
 
-    @Column(nullable = false)
     @NotNull
     private String author;
 
-    @Column(nullable = false)
     @NotNull
     private String image;
 
-    @Column(nullable = false)
     @NotNull
     private String title;
 
@@ -34,19 +30,15 @@ public class Book {
     @NotNull
     private String subTitle;
 
-    @Column(nullable = false)
     @NotNull
     private String publisher;
 
-    @Column(nullable = false)
     @NotNull
     private String year;
 
-    @Column(nullable = false)
     @NotNull
     private Integer pages;
 
-    @Column(nullable = false)
     @NotNull
     private String isbn;
 
