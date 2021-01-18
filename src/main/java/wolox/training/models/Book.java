@@ -26,7 +26,6 @@ public class Book {
     @NotNull
     private String title;
 
-    @Column(nullable = false)
     @NotNull
     private String subTitle;
 
