@@ -39,7 +39,7 @@ public class User {
     /**
      * Represents the foreign association between user and book
      */
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @NotNull
     private List<Book> books = new LinkedList<>();
 
