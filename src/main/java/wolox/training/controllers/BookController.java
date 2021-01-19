@@ -28,6 +28,11 @@ public class BookController {
         this.bookRepository = bookRepository;
     }
 
+    /**
+     * This method returns all the books stored in the database
+     *
+     * @return {@link List<Book>}
+     */
     @GetMapping
     public List<Book> findAll() {
         return bookRepository.findAll();
@@ -36,7 +41,7 @@ public class BookController {
     /**
      * This method consults book by author
      *
-     * @param bookAuthor
+     * @param bookAuthor: is the author of the book
      * @return {@link Book}
      */
     @GetMapping("/author/{bookAuthor}")
