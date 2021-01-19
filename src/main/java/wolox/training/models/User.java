@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import wolox.training.exceptions.BookAlreadyOwnedException;
 
 /**
  * Represents struct a user.
@@ -80,5 +81,17 @@ public class User {
 
     public void setBooks(List<Book> books) {
         this.books = books;
+    }
+
+    public void addBook(Book book) {
+        if (books.contains(book)) {
+            throw new BookAlreadyOwnedException();
+        }
+        
+        this.books.add(book);
+    }
+
+    public void deleteBook(Book book) {
+        books.remove(book);
     }
 }
