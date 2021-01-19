@@ -6,6 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * Represents struct a book.
+ *
+ * @author Daniel De La Pava
+ */
 @Entity
 public class Book {
 
@@ -37,6 +42,9 @@ public class Book {
     @NotNull
     private Integer pages;
 
+    /**
+     * Represents the International Standard Book Number.
+     */
     @NotNull
     private String isbn;
 
