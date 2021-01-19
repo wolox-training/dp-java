@@ -12,7 +12,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      * This method consults a book by author
      *
      * @param author
-     * @return returns a single book
+     * @return {@link Book}
      */
     Optional<Book> findByAuthor(String author);
 }
