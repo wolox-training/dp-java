@@ -11,7 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 /**
@@ -39,7 +39,7 @@ public class User {
     /**
      * Represents the foreign association between user and book
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @ManyToMany(cascade = CascadeType.ALL)
     @NotNull
     private List<Book> books = new LinkedList<>();
 
