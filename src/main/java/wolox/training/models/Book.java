@@ -1,6 +1,8 @@
 package wolox.training.models;
 
 import com.sun.istack.NotNull;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +14,7 @@ import javax.persistence.Id;
  * @author Daniel De La Pava
  */
 @Entity
+@ApiModel(description = "Book from data base")
 public class Book {
 
     @Id
@@ -19,6 +22,7 @@ public class Book {
     private Long id;
 
     @NotNull
+    @ApiModelProperty(notes = "The book genre: could be horror, comedy, drama, etc.")
     private String genre;
 
     @NotNull
@@ -46,6 +50,7 @@ public class Book {
      * Represents the International Standard Book Number.
      */
     @NotNull
+    @ApiModelProperty(notes = "Represents the International Standard Book Number")
     private String isbn;
 
     public Book() {
