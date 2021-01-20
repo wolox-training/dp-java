@@ -113,8 +113,8 @@ public class UserController {
     @PostMapping("/{userId}/books/{bookId}")
     @ResponseStatus(HttpStatus.CREATED)
     public User addBookToUser(@PathVariable Long userId, @PathVariable Long bookId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException());
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
 
         user.addBook(book);
         return userRepository.save(user);
@@ -129,8 +129,8 @@ public class UserController {
      */
     @DeleteMapping("/{userId}/books/{bookId}")
     public User deleteBookToUser(@PathVariable Long userId, @PathVariable Long bookId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException());
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
 
         user.deleteBook(book);
         return userRepository.save(user);

@@ -48,7 +48,6 @@ public class Book {
     @NotNull
     private String isbn;
 
-
     public Book() {
         //Constructor for JPA
     }
