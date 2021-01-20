@@ -46,8 +46,7 @@ public class BookController {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 401, message = "Not Authorized"),
             @ApiResponse(code = 403, message = "Access forbidden"),
-            @ApiResponse(code = 404, message = "Book not found"),
-            @ApiResponse(code = 500, message = "Internal Server Error")
+            @ApiResponse(code = 404, message = "Book not found")
     })
     public List<Book> findAll(@RequestParam(name = "publisher", required = false) String publisher,
             @RequestParam(name = "genre", required = false) String genre,
