@@ -44,8 +44,7 @@ public class BookController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 401, message = "Not Authorized"),
-            @ApiResponse(code = 403, message = "Access forbidden"),
-            @ApiResponse(code = 404, message = "Book Not Found"),
+            @ApiResponse(code = 403, message = "Access forbidden")
     })
     public List<Book> findAll() {
         return bookRepository.findAll();
@@ -81,7 +80,7 @@ public class BookController {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 401, message = "Not Authorized"),
             @ApiResponse(code = 403, message = "Access forbidden"),
-            @ApiResponse(code = 404, message = "Book Not Found"),
+            @ApiResponse(code = 404, message = "Resource not found")
     })
     public Book findOne(@ApiParam(value = "id to find the book") @PathVariable Long id) {
         return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
@@ -99,7 +98,6 @@ public class BookController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Book successfully created"),
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Resource not found"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
     public Book create(@ApiParam(value = "body of the book") @RequestBody Book book) {
