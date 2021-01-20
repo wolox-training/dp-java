@@ -1,5 +1,6 @@
 package wolox.training.models;
 
+import com.google.common.base.Preconditions;
 import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,6 +17,8 @@ import javax.persistence.Id;
 @Entity
 @ApiModel(description = "Book from data base")
 public class Book {
+
+    public static final String ERROR_MESSAGE = "Please check the Object supplied, its null!";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -73,6 +76,7 @@ public class Book {
     }
 
     public void setGenre(String genre) {
+        Preconditions.checkNotNull(genre, ERROR_MESSAGE);
         this.genre = genre;
     }
 
@@ -81,6 +85,7 @@ public class Book {
     }
 
     public void setAuthor(String author) {
+        Preconditions.checkNotNull(image, ERROR_MESSAGE);
         this.author = author;
     }
 
@@ -89,6 +94,7 @@ public class Book {
     }
 
     public void setImage(String image) {
+        Preconditions.checkNotNull(image, ERROR_MESSAGE);
         this.image = image;
     }
 
@@ -97,6 +103,7 @@ public class Book {
     }
 
     public void setTitle(String title) {
+        Preconditions.checkNotNull(title, ERROR_MESSAGE);
         this.title = title;
     }
 
@@ -105,6 +112,7 @@ public class Book {
     }
 
     public void setSubTitle(String subTitle) {
+        Preconditions.checkNotNull(subTitle, ERROR_MESSAGE);
         this.subTitle = subTitle;
     }
 
@@ -113,6 +121,7 @@ public class Book {
     }
 
     public void setPublisher(String publisher) {
+        Preconditions.checkNotNull(publisher, ERROR_MESSAGE);
         this.publisher = publisher;
     }
 
@@ -121,6 +130,7 @@ public class Book {
     }
 
     public void setYear(String year) {
+        Preconditions.checkNotNull(year, ERROR_MESSAGE);
         this.year = year;
     }
 
@@ -129,6 +139,7 @@ public class Book {
     }
 
     public void setPages(Integer pages) {
+        Preconditions.checkNotNull(pages, ERROR_MESSAGE);
         this.pages = pages;
     }
 
@@ -137,6 +148,7 @@ public class Book {
     }
 
     public void setIsbn(String isbn) {
+        Preconditions.checkNotNull(isbn, ERROR_MESSAGE);
         this.isbn = isbn;
     }
 }
