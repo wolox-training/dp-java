@@ -1,6 +1,8 @@
 package wolox.training.models;
 
 import com.sun.istack.NotNull;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,39 +14,49 @@ import javax.persistence.Id;
  * @author Daniel De La Pava
  */
 @Entity
+@ApiModel(description = "Book from data base")
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @ApiModelProperty(notes = "The book genre: could be horror, comedy, drama, etc.", required = true)
     @NotNull
     private String genre;
 
+    @ApiModelProperty(notes = "The book author: this is the author of the book", required = true)
     @NotNull
     private String author;
 
+    @ApiModelProperty(notes = "The book image: this is url the image the book", required = true)
     @NotNull
     private String image;
 
+    @ApiModelProperty(notes = "The book title: this is the title the book", required = true)
     @NotNull
     private String title;
 
+    @ApiModelProperty(notes = "The book subtitle: this is the subtitle the book", required = true)
     @NotNull
     private String subTitle;
 
+    @ApiModelProperty(notes = "The book publisher: this is the publisher the book", required = true)
     @NotNull
     private String publisher;
 
+    @ApiModelProperty(notes = "The book year: this is the year the book", required = true)
     @NotNull
     private String year;
 
+    @ApiModelProperty(notes = "The book page: this is the page the book", required = true)
     @NotNull
     private Integer pages;
 
     /**
      * Represents the International Standard Book Number.
      */
+    @ApiModelProperty(notes = "The book isbn: this is the book identification", required = true)
     @NotNull
     private String isbn;
 
