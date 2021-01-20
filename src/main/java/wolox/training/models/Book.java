@@ -143,7 +143,7 @@ public class Book {
     public void setYear(String year) {
         Preconditions.checkNotNull(year, String.format(ErrorConstants.NOT_NULL, "year"));
         Preconditions.checkArgument(StringUtils.isNumeric(year), String.format(ErrorConstants.NOT_NUMERIC, "year"));
-        Preconditions.checkArgument(Integer.parseInt(year) >= 0, String.format(ErrorConstants.NOT_GREATER_THAN, "year", "0"));
+        Preconditions.checkArgument(Integer.parseInt(year) > 0, String.format(ErrorConstants.NOT_GREATER_THAN, "year", "0"));
 
         this.year = year;
     }
@@ -154,7 +154,7 @@ public class Book {
 
     public void setPages(Integer pages) {
         Preconditions.checkNotNull(pages, String.format(ErrorConstants.NOT_NULL, "pages"));
-        Preconditions.checkArgument(pages >= 0, String.format(ErrorConstants.NOT_GREATER_THAN, "pages", "0"));
+        Preconditions.checkArgument(pages > 0, String.format(ErrorConstants.NOT_GREATER_THAN, "pages", "0"));
 
         this.pages = pages;
     }
