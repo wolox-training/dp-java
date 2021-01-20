@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import wolox.training.exceptions.BookIdMismatchException;
@@ -35,19 +36,23 @@ public class BookController {
     }
 
     /**
-     * This method returns all the books stored in the database
+     * This method returns all the books stored in the database through a filter
      *
      * @return {@link List<Book>}
      */
     @GetMapping
-    @ApiOperation(value = "return all book", response = Book[].class)
+    @ApiOperation(value = "Given a filter type and a param for filter, return all books", response = Book[].class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 401, message = "Not Authorized"),
-            @ApiResponse(code = 403, message = "Access forbidden")
+            @ApiResponse(code = 403, message = "Access forbidden"),
+            @ApiResponse(code = 404, message = "Book not found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public List<Book> findAll(@RequestParam(name = "publisher", required = false) String publisher,
+            @RequestParam(name = "genre", required = false) String genre,
+            @RequestParam(name = "year", required = false) String year) {
+        return bookRepository.getAllBook(publisher, genre, year);
     }
 
     /**
