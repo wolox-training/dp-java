@@ -65,8 +65,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 401, message = "Not Authorized"),
-            @ApiResponse(code = 403, message = "Access forbidden"),
-            @ApiResponse(code = 404, message = "User Not Found")
+            @ApiResponse(code = 403, message = "Access forbidden")
     })
     public User findByUsername(@ApiParam(value = "username to find the user") @PathVariable String username) {
         return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
