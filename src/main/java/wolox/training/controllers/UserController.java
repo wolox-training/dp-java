@@ -2,6 +2,7 @@ package wolox.training.controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
@@ -67,7 +68,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 404, message = "User Not Found")
     })
-    public User findByUsername(@PathVariable String username) {
+    public User findByUsername(@ApiParam(value = "username to find the user") @PathVariable String username) {
         return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
@@ -85,7 +86,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 404, message = "User Not Found")
     })
-    public User findOne(@PathVariable Long id) {
+    public User findOne(@ApiParam(value = "id to find the user") @PathVariable Long id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
@@ -103,7 +104,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public User create(@RequestBody User user) {
+    public User create(@ApiParam(value = "body of the user") @RequestBody User user) {
         return userRepository.save(user);
     }
 
@@ -120,7 +121,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "Resource not found"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public void delete(@PathVariable Long id) {
+    public void delete(@ApiParam(value = "id to delete the user") @PathVariable Long id) {
         userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userRepository.deleteById(id);
     }
@@ -140,7 +141,8 @@ public class UserController {
             @ApiResponse(code = 404, message = "Resource not found"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public User updateUser(@RequestBody User user, @PathVariable Long id) {
+    public User updateUser(@ApiParam(value = "body of the user") @RequestBody User user,
+            @ApiParam(value = "id to find the user") @PathVariable Long id) {
         if (!user.getId().equals(id)) {
             throw new UserIdMismatchException();
         }
@@ -165,7 +167,8 @@ public class UserController {
             @ApiResponse(code = 404, message = "Resource not found"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public User addBookToUser(@PathVariable Long userId, @PathVariable Long bookId) {
+    public User addBookToUser(@ApiParam(value = "id to find the user") @PathVariable Long userId,
+            @ApiParam(value = "id to find the book") @PathVariable Long bookId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
 
@@ -188,7 +191,8 @@ public class UserController {
             @ApiResponse(code = 404, message = "Resource not found"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public User deleteBookToUser(@PathVariable Long userId, @PathVariable Long bookId) {
+    public User deleteBookToUser(@ApiParam(value = "id to find the user") @PathVariable Long userId,
+            @ApiParam(value = "id to delete the book") @PathVariable Long bookId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
 
