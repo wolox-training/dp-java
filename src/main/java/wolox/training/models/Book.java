@@ -67,6 +67,10 @@ public class Book {
         //Constructor for JPA
     }
 
+    public Book(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
