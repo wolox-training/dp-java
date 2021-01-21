@@ -1,5 +1,6 @@
 package wolox.training.models;
 
+import com.google.common.base.Preconditions;
 import com.sun.istack.NotNull;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import wolox.training.exceptions.BookAlreadyOwnedException;
+import wolox.training.models.constans.ErrorConstants;
 
 /**
  * Represents struct a user.
@@ -56,6 +58,9 @@ public class User {
     }
 
     public void setUsername(String username) {
+        Preconditions.checkNotNull(username, String.format(ErrorConstants.NOT_NULL, "username"));
+        Preconditions.checkArgument(!username.isEmpty(), String.format(ErrorConstants.NOT_EMPTY, "username"));
+
         this.username = username;
     }
 
@@ -64,6 +69,9 @@ public class User {
     }
 
     public void setName(String name) {
+        Preconditions.checkNotNull(name, String.format(ErrorConstants.NOT_NULL, "name"));
+        Preconditions.checkArgument(!name.isEmpty(), String.format(ErrorConstants.NOT_EMPTY, "name"));
+
         this.name = name;
     }
 
@@ -72,6 +80,9 @@ public class User {
     }
 
     public void setBirthDate(LocalDate birthDate) {
+        Preconditions.checkNotNull(birthDate, String.format(ErrorConstants.NOT_NULL, "birthDate"));
+        Preconditions.checkArgument(birthDate.isBefore(LocalDate.now()), ErrorConstants.NOT_LATER_CURRENT_DATE);
+
         this.birthDate = birthDate;
     }
 
