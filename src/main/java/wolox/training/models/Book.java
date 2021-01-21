@@ -1,5 +1,6 @@
 package wolox.training.models;
 
+import com.google.common.base.Preconditions;
 import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import org.apache.commons.lang3.StringUtils;
+import wolox.training.models.constans.ErrorConstants;
 
 /**
  * Represents struct a book.
@@ -73,6 +76,9 @@ public class Book {
     }
 
     public void setGenre(String genre) {
+        Preconditions.checkNotNull(genre, String.format(ErrorConstants.NOT_NULL, "genre"));
+        Preconditions.checkArgument(!genre.isEmpty(), String.format(ErrorConstants.NOT_EMPTY, "genre"));
+
         this.genre = genre;
     }
 
@@ -81,6 +87,9 @@ public class Book {
     }
 
     public void setAuthor(String author) {
+        Preconditions.checkNotNull(author, String.format(ErrorConstants.NOT_NULL, "author"));
+        Preconditions.checkArgument(!author.isEmpty(), String.format(ErrorConstants.NOT_EMPTY, "author"));
+
         this.author = author;
     }
 
@@ -89,6 +98,9 @@ public class Book {
     }
 
     public void setImage(String image) {
+        Preconditions.checkNotNull(image, String.format(ErrorConstants.NOT_NULL, "image"));
+        Preconditions.checkArgument(!image.isEmpty(), String.format(ErrorConstants.NOT_EMPTY, "image"));
+
         this.image = image;
     }
 
@@ -97,6 +109,9 @@ public class Book {
     }
 
     public void setTitle(String title) {
+        Preconditions.checkNotNull(title, String.format(ErrorConstants.NOT_NULL, "title"));
+        Preconditions.checkArgument(!title.isEmpty(), String.format(ErrorConstants.NOT_EMPTY, "title"));
+
         this.title = title;
     }
 
@@ -105,6 +120,8 @@ public class Book {
     }
 
     public void setSubTitle(String subTitle) {
+        Preconditions.checkNotNull(subTitle, String.format(ErrorConstants.NOT_NULL, "subTitle"));
+
         this.subTitle = subTitle;
     }
 
@@ -113,6 +130,9 @@ public class Book {
     }
 
     public void setPublisher(String publisher) {
+        Preconditions.checkNotNull(publisher, String.format(ErrorConstants.NOT_NULL, "publisher"));
+        Preconditions.checkArgument(!publisher.isEmpty(), String.format(ErrorConstants.NOT_EMPTY, "publisher"));
+
         this.publisher = publisher;
     }
 
@@ -121,6 +141,10 @@ public class Book {
     }
 
     public void setYear(String year) {
+        Preconditions.checkNotNull(year, String.format(ErrorConstants.NOT_NULL, "year"));
+        Preconditions.checkArgument(StringUtils.isNumeric(year), String.format(ErrorConstants.NOT_NUMERIC, "year"));
+        Preconditions.checkArgument(Integer.parseInt(year) > 0, String.format(ErrorConstants.NOT_GREATER_THAN, "year", "0"));
+
         this.year = year;
     }
 
@@ -129,6 +153,9 @@ public class Book {
     }
 
     public void setPages(Integer pages) {
+        Preconditions.checkNotNull(pages, String.format(ErrorConstants.NOT_NULL, "pages"));
+        Preconditions.checkArgument(pages > 0, String.format(ErrorConstants.NOT_GREATER_THAN, "pages", "0"));
+
         this.pages = pages;
     }
 
@@ -137,6 +164,9 @@ public class Book {
     }
 
     public void setIsbn(String isbn) {
+        Preconditions.checkNotNull(isbn, String.format(ErrorConstants.NOT_NULL, "isbn"));
+        Preconditions.checkArgument(!isbn.isEmpty(), String.format(ErrorConstants.NOT_EMPTY, "isbn"));
+
         this.isbn = isbn;
     }
 }

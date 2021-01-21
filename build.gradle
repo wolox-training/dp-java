@@ -20,7 +20,9 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('io.springfox:springfox-swagger2:2.9.2')
 	compile('io.springfox:springfox-swagger-ui:2.9.2')
+	compile('com.google.guava:guava:30.1-jre')
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.apache.commons:commons-lang3:3.11'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
