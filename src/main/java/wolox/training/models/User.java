@@ -1,6 +1,8 @@
 package wolox.training.models;
 
 import com.sun.istack.NotNull;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -21,24 +23,29 @@ import wolox.training.exceptions.BookAlreadyOwnedException;
  */
 @Entity
 @Table(name = "users")
+@ApiModel(description = "User from data base")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @ApiModelProperty(notes = "The user username: is the username to login", required = true)
     @NotNull
     private String username;
 
+    @ApiModelProperty(notes = "The user name: is the user's first name", required = true)
     @NotNull
     private String name;
 
+    @ApiModelProperty(notes = "The user birthDate: it's the birthday date", required = true)
     @NotNull
     private LocalDate birthDate;
 
     /**
      * Represents the foreign association between user and book
      */
+    @ApiModelProperty(notes = "The user books: are the books associated with a user", required = false)
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @NotNull
     private List<Book> books = new LinkedList<>();
