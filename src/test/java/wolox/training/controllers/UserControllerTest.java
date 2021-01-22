@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Optional;
@@ -182,7 +181,8 @@ class UserControllerTest {
         Mockito.when(mockedUserRepository.findById(Mockito.any())).thenReturn(Optional.of(oneTestUser));
         Mockito.when(mockedUserRepository.save(Mockito.any())).thenReturn(oneTestUserCreated);
 
-        String url = API_USERS.concat(String.valueOf(oneTestUserCreated.getId())).concat("/books/").concat(String.valueOf(oneTestBookCreated.getId()));
+        String url = API_USERS.concat(String.valueOf(oneTestUserCreated.getId())).concat("/books/")
+                .concat(String.valueOf(oneTestBookCreated.getId()));
         mvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -198,7 +198,8 @@ class UserControllerTest {
         Mockito.when(mockedUserRepository.findById(Mockito.any())).thenReturn(Optional.of(oneTestUserCreated));
         Mockito.when(mockedUserRepository.save(Mockito.any())).thenReturn(oneTestUser);
 
-        String url = API_USERS.concat(String.valueOf(oneTestUserCreated.getId())).concat("/books/").concat(String.valueOf(oneTestBookCreated.getId()));
+        String url = API_USERS.concat(String.valueOf(oneTestUserCreated.getId())).concat("/books/")
+                .concat(String.valueOf(oneTestBookCreated.getId()));
         mvc.perform(delete(url)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
