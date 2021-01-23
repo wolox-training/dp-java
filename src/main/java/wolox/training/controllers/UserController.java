@@ -12,8 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,8 +33,10 @@ import wolox.training.exceptions.UserIdMismatchException;
 import wolox.training.exceptions.UserNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.models.User;
+import wolox.training.models.dtos.LoginDTO;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
+import wolox.training.security.CustomAuthProvider;
 
 @RestController
 @RequestMapping("/api/users")
@@ -37,10 +45,13 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final CustomAuthProvider customAuthProvider;
 
-    public UserController(UserRepository userRepository, BookRepository bookRepository) {
+    public UserController(UserRepository userRepository, BookRepository bookRepository,
+            CustomAuthProvider customAuthProvider) {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
+        this.customAuthProvider = customAuthProvider;
     }
 
     /**
@@ -204,6 +215,48 @@ public class UserController {
         user.deleteBook(book);
         return userRepository.save(user);
     }
+
+    @PatchMapping("/{id}/password")
+    @ApiOperation(value = "Given the id of the user, the password of the user will be updated, return the user", response = User.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Password user updated"),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 405, message = "Method Not Allowed"),
+            @ApiResponse(code = 401, message = "Access unauthorized."),
+            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> updatePassword(@RequestBody LoginDTO loginDTO, @PathVariable Long id) {
+        User userFounded = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        userFounded.setPassword(loginDTO.getPassword());
+        userRepository.save(userFounded);
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation(value = "Given the username of a user, return the user logged", response = User.class)
+    @PostMapping("/login")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully login user"),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 405, message = "Method Not Allowed"),
+            @ApiResponse(code = 401, message = "Access unauthorized."),
+            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public User login(@RequestBody LoginDTO loginDTO) {
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),
+                loginDTO.getPassword());
+
+        Authentication auth = customAuthProvider.authenticate(authReq);
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+
+        securityContext.setAuthentication(auth);
+
+        return userRepository.findByUsername(loginDTO.getUsername()).orElseThrow(UserNotFoundException::new);
+    }
+
 
 
     /**
