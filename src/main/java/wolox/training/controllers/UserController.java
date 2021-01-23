@@ -248,6 +248,31 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @ApiOperation(value = "Given the username of a user, return the user logged", response = User.class)
+    @PostMapping("/login")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully login user"),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 405, message = "Method Not Allowed"),
+            @ApiResponse(code = 401, message = "Access unauthorized."),
+            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public User login(@RequestBody LoginDTO loginDTO) {
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),
+                loginDTO.getPassword());
+
+        Authentication auth = customAuthProvider.authenticate(authReq);
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+
+        securityContext.setAuthentication(auth);
+
+        return userRepository.findByUsername(loginDTO.getUsername()).orElseThrow(UserNotFoundException::new);
+    }
+
+
+
     /**
      * Method that allows you to log into the application
      *
