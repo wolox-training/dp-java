@@ -1,5 +1,7 @@
 package wolox.training.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.google.common.base.Preconditions;
 import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiModel;
@@ -15,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 import wolox.training.models.constans.ErrorConstants;
 
@@ -40,7 +43,7 @@ public class User {
     @NotNull
     private String name;
 
-    @ApiModelProperty(notes = "The user birthDate: it's the birthday date", required = true)
+    @ApiModelProperty(notes = "The user birthDate: it's the birthday date", required = true, example = "1989-10-16")
     @NotNull
     private LocalDate birthDate;
 
@@ -51,6 +54,11 @@ public class User {
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @NotNull
     private List<Book> books = new LinkedList<>();
+
+    @ApiModelProperty(notes = "The user password: are the authentication the a user", required = true)
+    @JsonProperty(access = Access.WRITE_ONLY)
+    @NotNull
+    private String password;
 
     public User() {
         // Constructor for JPA
@@ -111,5 +119,20 @@ public class User {
 
     public void deleteBook(Book book) {
         books.remove(book);
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        Preconditions.checkNotNull(password, String.format(ErrorConstants.NOT_NULL,"password"));
+        Preconditions.checkArgument(password.length() >= 6, String.format(ErrorConstants.NOT_GREATER_THAN, "password", "0"));
+
+        this.password = new BCryptPasswordEncoder().encode(password);
+    }
+
+    public boolean validPassword(String password) {
+        return new BCryptPasswordEncoder().matches(password, this.password);
     }
 }
