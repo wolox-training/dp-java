@@ -1,7 +1,6 @@
 package wolox.training.security;
 
 import java.util.Collections;
-import java.util.Optional;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,12 +25,10 @@ public class CustomAuthProvider implements AuthenticationProvider {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        Optional<User> user = userRepository.findByUsername(name);
+        User user = userRepository.findByUsername(name).orElseThrow(UserNotFoundException::new);
 
-        if (user.isEmpty()) {
-            throw new UserNotFoundException();
-        } else if (!user.get().validPassword(password)) {
-            throw new BadCredentialsException("Provide password doesn't match user's password");
+        if (!user.validPassword(password)) {
+            throw new BadCredentialsException("The provided user or password is incorrect");
         } else {
             return new UsernamePasswordAuthenticationToken(name, password, Collections.emptyList());
         }

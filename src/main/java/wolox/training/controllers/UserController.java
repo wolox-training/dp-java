@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,12 +40,15 @@ public class UserController {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final CustomAuthProvider customAuthProvider;
+    private final PasswordEncoder passwordEncoder;
 
     public UserController(UserRepository userRepository, BookRepository bookRepository,
-            CustomAuthProvider customAuthProvider) {
+            CustomAuthProvider customAuthProvider,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.customAuthProvider = customAuthProvider;
+        this.passwordEncoder = passwordEncoder;
         ;
     }
 
@@ -115,6 +119,8 @@ public class UserController {
             @ApiResponse(code = 500, message = "Internal server error")
     })
     public User create(@ApiParam(value = "body of the user") @RequestBody User user) {
+
+        setEncodedPassword(user, user.getPassword());
         return userRepository.save(user);
     }
 
@@ -157,7 +163,9 @@ public class UserController {
             throw new UserIdMismatchException();
         }
 
-        userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        User userFound = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        user.setPassword(userFound.getPassword());
+
         return userRepository.save(user);
     }
 
@@ -223,8 +231,8 @@ public class UserController {
             @ApiResponse(code = 200, message = "Password user updated"),
             @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 405, message = "Method Not Allowed"),
-            @ApiResponse(code = 401, message = "Access unauthorized."),
-            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @ResponseStatus(HttpStatus.OK)
@@ -246,9 +254,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully login user"),
             @ApiResponse(code = 404, message = "User not found"),
-            @ApiResponse(code = 405, message = "Method Not Allowed"),
-            @ApiResponse(code = 401, message = "Access unauthorized."),
-            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @ResponseStatus(HttpStatus.OK)
@@ -275,8 +282,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully logout user"),
             @ApiResponse(code = 405, message = "Method Not Allowed"),
-            @ApiResponse(code = 401, message = "Access unauthorized."),
-            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @ResponseStatus(HttpStatus.OK)
@@ -287,4 +294,8 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+
+    private void setEncodedPassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+    }
 }
