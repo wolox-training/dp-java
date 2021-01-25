@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +45,7 @@ public class UserController {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.customAuthProvider = customAuthProvider;
+        ;
     }
 
     /**
@@ -210,6 +210,13 @@ public class UserController {
         return userRepository.save(user);
     }
 
+    /**
+     * Method that allows updating the password of a specific user
+     *
+     * @param loginDTO: object containing password and username
+     * @param id: this is the unique identifier of the user
+     * @return {@link ResponseEntity}
+     */
     @PatchMapping("/{id}/password")
     @ApiOperation(value = "Given the id of the user, the password of the user will be updated, return the user", response = User.class)
     @ApiResponses(value = {
@@ -228,6 +235,12 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Method that allows you to log into the application
+     *
+     * @param loginDTO: object containing password and username
+     * @return {@link User}
+     */
     @ApiOperation(value = "Given the username of a user, return the user logged", response = User.class)
     @PostMapping("/login")
     @ApiResponses(value = {
@@ -240,15 +253,39 @@ public class UserController {
     })
     @ResponseStatus(HttpStatus.OK)
     public User login(@RequestBody LoginDTO loginDTO) {
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),
-                loginDTO.getPassword());
 
-        Authentication auth = customAuthProvider.authenticate(authReq);
-        SecurityContext securityContext = SecurityContextHolder.getContext();
+        // try to authenticate with given credentials, should always return not null or throw an {@link AuthenticationException}
+        final Authentication authentication = customAuthProvider
+                .authenticate(
+                        new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
 
-        securityContext.setAuthentication(auth);
+        // if authentication was successful we will update the security context and redirect to the page requested first
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return userRepository.findByUsername(loginDTO.getUsername()).orElseThrow(UserNotFoundException::new);
+    }
+
+    /**
+     * Method that allows you to log out of the application
+     *
+     * @return {@link ResponseEntity}
+     */
+    @ApiOperation(value = "Given the username of a user, return the user logged", response = User.class)
+    @PostMapping("/logout")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully login user"),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 405, message = "Method Not Allowed"),
+            @ApiResponse(code = 401, message = "Access unauthorized."),
+            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> logout() {
+        // if authentication was successful we will update the security context and redirect to the page requested first
+        SecurityContextHolder.getContext().setAuthentication(null); //
+
+        return ResponseEntity.ok().build();
     }
 
 }
