@@ -86,4 +86,10 @@ class UserTest {
         assertThat(oneTestUser.getBooks().size() == userFound.get().getBooks().size()).isTrue();
         assertThat(oneTestBook.getAuthor().equals(userFound.get().getBooks().get(0).getAuthor())).isTrue();
     }
+
+    @Test
+    public void whenFindByUsernameThatNotExist_thenReturnError() {
+        Optional<User> userFound = userRepository.findByUsername("monkeys");
+        assertThat(userFound.isPresent()).isFalse();
+    }
 }

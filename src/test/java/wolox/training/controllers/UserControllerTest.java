@@ -87,8 +87,7 @@ class UserControllerTest {
         String jsonUsers = mapper.writeValueAsString(Collections.singletonList(oneTestUser));
         Mockito.when(mockedUserRepository.findAll()).thenReturn(Collections.singletonList(oneTestUser));
 
-        String url = API_USERS;
-        mvc.perform(get(url)
+        mvc.perform(get(API_USERS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

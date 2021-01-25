@@ -44,8 +44,6 @@ class BookControllerTest {
     @BeforeEach
     void setUp() {
         oneTestBook = new Book();
-        oneTestBookCreated = new Book(1L);
-
         oneTestBook.setGenre("Fantasy");
         oneTestBook.setAuthor("John Ronald Reuel Tolkien");
         oneTestBook.setImage("https://images-na.ssl-images-amazon.com/images/I/81U5RVCuTHL.jpg");
@@ -56,6 +54,7 @@ class BookControllerTest {
         oneTestBook.setPages(352);
         oneTestBook.setIsbn("PR6039.O32 L6 1954, v.2");
 
+        oneTestBookCreated = new Book(1L);
         oneTestBookCreated.setGenre("Fantasy");
         oneTestBookCreated.setAuthor("John Ronald Reuel Tolkien");
         oneTestBookCreated.setImage("https://images-na.ssl-images-amazon.com/images/I/81U5RVCuTHL.jpg");
@@ -73,8 +72,7 @@ class BookControllerTest {
         Mockito.when(mockedBookRepository.getAllBook(Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(Collections.singletonList(oneTestBook));
 
-        String url = API_BOOKS;
-        mvc.perform(get(url)
+        mvc.perform(get(API_BOOKS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -124,8 +122,7 @@ class BookControllerTest {
         String jsonBookCreated = mapper.writeValueAsString(oneTestBookCreated);
         Mockito.when(mockedBookRepository.save(Mockito.any())).thenReturn(oneTestBookCreated);
 
-        String url = API_BOOKS;
-        mvc.perform(post(url)
+        mvc.perform(post(API_BOOKS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBook))
                 .andDo(print())

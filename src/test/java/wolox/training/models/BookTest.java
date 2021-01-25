@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
@@ -76,9 +78,21 @@ class BookTest {
     }
 
     @Test
+    public void whenFindByAuthorThatNotExist_thenReturnError() {
+        Optional<Book> bookFound = bookRepository.findByAuthor("monkeys");
+        assertThat(bookFound.isPresent()).isFalse();
+    }
+
+    @Test
     public void whenGetAllBooks_thenReturnBooks() {
         List<Book> booksFound = bookRepository.getAllBook("Bloomsbury", null, null);
         assertNotNull(booksFound);
         assertFalse(booksFound.isEmpty());
+    }
+
+    @Test
+    public void whenGetAllBooksThatNotExist_thenReturnError() {
+        List<Book> booksFound = bookRepository.getAllBook("monkeys", "monkeys", "monkeys");
+        assertTrue(booksFound.isEmpty());
     }
 }
