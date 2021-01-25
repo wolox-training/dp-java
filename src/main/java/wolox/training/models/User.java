@@ -133,7 +133,7 @@ public class User {
         Preconditions.checkNotNull(password, String.format(ErrorConstants.NOT_NULL,"password"));
         Preconditions.checkArgument(password.length() >= 6, String.format(ErrorConstants.NOT_GREATER_THAN, "password", "0"));
 
-        this.password = new BCryptPasswordEncoder().encode(password);
+        this.password = password;
     }
 
     public boolean validPassword(String password) {
