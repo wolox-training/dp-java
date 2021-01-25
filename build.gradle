@@ -23,7 +23,11 @@ dependencies {
 	compile('com.google.guava:guava:30.1-jre')
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.apache.commons:commons-lang3:3.11'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testCompile('org.junit.platform:junit-platform-launcher:1.7.0')
+	testCompile('org.junit.vintage:junit-vintage-engine:5.7.0')
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
