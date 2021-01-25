@@ -259,9 +259,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully login user"),
             @ApiResponse(code = 404, message = "User not found"),
-            @ApiResponse(code = 405, message = "Method Not Allowed"),
-            @ApiResponse(code = 401, message = "Access unauthorized."),
-            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @ResponseStatus(HttpStatus.OK)
@@ -288,8 +287,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully logout user"),
             @ApiResponse(code = 405, message = "Method Not Allowed"),
-            @ApiResponse(code = 401, message = "Access unauthorized."),
-            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @ResponseStatus(HttpStatus.OK)
