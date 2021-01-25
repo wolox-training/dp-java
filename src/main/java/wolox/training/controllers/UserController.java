@@ -283,10 +283,10 @@ public class UserController {
      *
      * @return {@link ResponseEntity}
      */
-    @ApiOperation(value = "Given the username of a user, return the user logged", response = User.class)
+    @ApiOperation(value = "return the user logout", response = User.class)
     @PostMapping("/logout")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully login user"),
+            @ApiResponse(code = 200, message = "Successfully logout user"),
             @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 405, message = "Method Not Allowed"),
             @ApiResponse(code = 401, message = "Access unauthorized."),
