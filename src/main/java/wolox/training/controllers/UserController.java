@@ -248,6 +248,12 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Method that allows you to log into the application
+     *
+     * @param loginDTO: object containing password and username
+     * @return {@link User}
+     */
     @ApiOperation(value = "Given the username of a user, return the user logged", response = User.class)
     @PostMapping("/login")
     @ApiResponses(value = {
@@ -260,15 +266,39 @@ public class UserController {
     })
     @ResponseStatus(HttpStatus.OK)
     public User login(@RequestBody LoginDTO loginDTO) {
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),
-                loginDTO.getPassword());
 
-        Authentication auth = customAuthProvider.authenticate(authReq);
-        SecurityContext securityContext = SecurityContextHolder.getContext();
+        // try to authenticate with given credentials, should always return not null or throw an {@link AuthenticationException}
+        final Authentication authentication = customAuthProvider
+                .authenticate(
+                        new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
 
-        securityContext.setAuthentication(auth);
+        // if authentication was successful we will update the security context and redirect to the page requested first
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return userRepository.findByUsername(loginDTO.getUsername()).orElseThrow(UserNotFoundException::new);
+    }
+
+    /**
+     * Method that allows you to log out of the application
+     *
+     * @return {@link ResponseEntity}
+     */
+    @ApiOperation(value = "Given the username of a user, return the user logged", response = User.class)
+    @PostMapping("/logout")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully login user"),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 405, message = "Method Not Allowed"),
+            @ApiResponse(code = 401, message = "Access unauthorized."),
+            @ApiResponse(code = 403, message = "Access unauthorized."),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> logout() {
+        // if authentication was successful we will update the security context and redirect to the page requested first
+        SecurityContextHolder.getContext().setAuthentication(null); //
+
+        return ResponseEntity.ok().build();
     }
 
 
