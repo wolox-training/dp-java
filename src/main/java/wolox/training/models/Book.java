@@ -69,9 +69,9 @@ public class Book {
     }
 
     public Book(BookInfoDTO bookInfoDTO) {
-        this.genre = "N/A - External API";
+        this.genre = bookInfoDTO.getSubjects().get(0).getName();
         this.author = bookInfoDTO.getAuthors().get(0).getName();
-        this.image = bookInfoDTO.getUrl();
+        this.image = bookInfoDTO.getCover().getMedium();
         this.title = bookInfoDTO.getTitle();
         this.subTitle = bookInfoDTO.getSubtitle();
         this.publisher = bookInfoDTO.getPublishers().get(0).getName();
@@ -160,7 +160,8 @@ public class Book {
     public void setYear(String year) {
         Preconditions.checkNotNull(year, String.format(ErrorConstants.NOT_NULL, "year"));
         Preconditions.checkArgument(StringUtils.isNumeric(year), String.format(ErrorConstants.NOT_NUMERIC, "year"));
-        Preconditions.checkArgument(Integer.parseInt(year) > 0, String.format(ErrorConstants.NOT_GREATER_THAN, "year", "0"));
+        Preconditions
+                .checkArgument(Integer.parseInt(year) > 0, String.format(ErrorConstants.NOT_GREATER_THAN, "year", "0"));
 
         this.year = year;
     }
