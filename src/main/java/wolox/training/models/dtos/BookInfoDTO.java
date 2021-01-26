@@ -1,6 +1,5 @@
 package wolox.training.models.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
@@ -22,7 +21,10 @@ public class BookInfoDTO {
 
     private List<AuthorDTO> authors;
 
-    @JsonIgnore
+    private List<SubjectsDTO> subjects;
+
+    private CoverDTO cover;
+
     private String url;
 
     public BookInfoDTO() {
@@ -91,5 +93,21 @@ public class BookInfoDTO {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public List<SubjectsDTO> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<SubjectsDTO> subjects) {
+        this.subjects = subjects;
+    }
+
+    public CoverDTO getCover() {
+        return cover;
+    }
+
+    public void setCover(CoverDTO cover) {
+        this.cover = cover;
     }
 }
