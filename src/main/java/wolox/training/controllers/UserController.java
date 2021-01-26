@@ -5,7 +5,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import wolox.training.exceptions.BookNotFoundException;
@@ -198,4 +204,40 @@ public class UserController {
         user.deleteBook(book);
         return userRepository.save(user);
     }
+
+
+    /**
+     * This method obtains a list of users with some parameters
+     *
+     * @param startDate: Start date as first date in the range search
+     * @param endDate:   End date as last date in the range search
+     * @param sequence:  The sequence contains the characters must contain the user's name
+     * @param from:      Where the results page starts
+     * @param size:      List is the size of the expected result
+     * @param sort:      It is the field by which you want to order
+     * @return {@link Page<User>}
+     */
+    @GetMapping("/search")
+    @ApiOperation(value = "Giving a start date birthday, an end date birthday and a sequence of characters of the user's name, returns the users")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access forbidden"),
+            @ApiResponse(code = 404, message = "User Not Found")
+    })
+    public Page<User> findUsers(
+            @ApiParam(value = "start date as first date in the range search") @RequestParam(name = "startDate", required = false) String startDate,
+            @ApiParam(value = "end date as last date in the range search") @RequestParam(name = "endDate", required = false) String endDate,
+            @ApiParam(value = "The sequence contains the characters must contain the user's name") @RequestParam(name = "sequence", required = false, defaultValue = "") String sequence,
+            @ApiParam(value = "where the results page starts") @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @ApiParam(value = "list is the size of the expected result") @RequestParam(name = "size", defaultValue = "5") Integer size,
+            @ApiParam(value = "it is the field by which you want to order") @RequestParam(name = "sort", defaultValue = "id") String sort
+
+    ) {
+        return userRepository.findAllByNameIgnoreCaseContainingAndBirthdateBetween(
+                Objects.nonNull(startDate) ? LocalDate.parse(startDate) : null,
+                Objects.nonNull(endDate) ? LocalDate.parse(endDate) : null,
+                sequence, PageRequest.of(from, size, Sort.by(sort)));
+    }
+
 }
