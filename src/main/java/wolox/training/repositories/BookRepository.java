@@ -33,4 +33,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             + "AND (:year is null OR bk.year = :year) ")
     List<Book> getAllBook(@Param("publisher") String publisher, @Param("genre") String genre,
             @Param("year") String year);
+
+
+    /**
+     * This method performs a search by ISBN
+     *
+     * @param isbn: this is the book identification
+     * @return {@link Book}
+     */
+    Optional<Book> findByIsbn(String isbn);
 }

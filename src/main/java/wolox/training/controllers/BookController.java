@@ -6,8 +6,10 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import wolox.training.exceptions.BookIdMismatchException;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
+import wolox.training.models.dtos.BookInfoDTO;
 import wolox.training.repositories.BookRepository;
+import wolox.training.services.external.OpenLibraryService;
 
 @RestController
 @RequestMapping("/api/books")
@@ -29,10 +33,13 @@ import wolox.training.repositories.BookRepository;
 public class BookController {
 
     private final BookRepository bookRepository;
+    private final OpenLibraryService openLibraryService;
 
     @Autowired
-    public BookController(BookRepository bookRepository) {
+    public BookController(BookRepository bookRepository,
+            OpenLibraryService openLibraryService) {
         this.bookRepository = bookRepository;
+        this.openLibraryService = openLibraryService;
     }
 
     /**
@@ -149,6 +156,32 @@ public class BookController {
 
         bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
         return bookRepository.save(book);
+    }
+
+    /**
+     * Given the isbn of a book, search the database or an external service and return the book or a book exception was not found
+     *
+     * @param isbn: this is the book identification
+     * @return {@link Book}
+     */
+    @GetMapping("/isbn/{isbn}")
+    @ApiOperation(value = "Given the isbn of a book, search the database or an external service and return the book", response = Book.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 201, message = "Book successfully created"),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access forbidden"),
+            @ApiResponse(code = 404, message = "Book Not Found"),
+    })
+    public ResponseEntity<Book> findByIsbn(@ApiParam(value = "this is the book identification") @PathVariable(name = "isbn") String isbn) {
+        Optional<Book> bookOptional = bookRepository.findByIsbn(isbn);
+
+        if (bookOptional.isEmpty()) {
+            BookInfoDTO bookInfoDTO = openLibraryService.bookInfo(isbn).orElseThrow(BookNotFoundException::new);
+            return new ResponseEntity<>(bookRepository.save(new Book(bookInfoDTO)), HttpStatus.CREATED);
+        }
+
+        return new ResponseEntity<>(bookOptional.get(), HttpStatus.OK);
     }
 
 }
