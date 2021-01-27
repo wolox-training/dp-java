@@ -33,7 +33,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             + "WHERE (:publisher is null OR bk.publisher = :publisher) "
             + "AND (:genre is null OR bk.genre = :genre) "
             + "AND (:year is null OR bk.year = :year) ")
-    List<Book> getAllBook(@Param("publisher") String publisher, @Param("genre") String genre,
+    List<Book> getAllBooksMatch(@Param("publisher") String publisher, @Param("genre") String genre,
             @Param("year") String year);
 
 
@@ -50,25 +50,25 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      * Method that allows to bring all the filtered books
      *
      * @param publisher: book publisher
-     * @param genre: book genre
-     * @param year: year of publication of the book
-     * @param author: author of the book
-     * @param image: picture or book cover
-     * @param title: title of the book
-     * @param subtitle: book subtitle
-     * @param pages: pages contained in the book
-     * @param isbn: book identifier
-     * @param pageable: object that allows us to order and paginate the query
+     * @param genre:     book genre
+     * @param year:      year of publication of the book
+     * @param author:    author of the book
+     * @param image:     picture or book cover
+     * @param title:     title of the book
+     * @param subtitle:  book subtitle
+     * @param pages:     pages contained in the book
+     * @param isbn:      book identifier
+     * @param pageable:  object that allows us to order and paginate the query
      * @return {@link Page<Book>}
      */
     @Query("SELECT bk FROM Book bk "
-            + "WHERE (:publisherName = '' OR bk.publisher = :publisherName) "
-            + "AND (:genre = '' OR bk.genre = :genre) "
+            + "WHERE (:publisherName = '' OR LOWER(bk.publisher) = LOWER(:publisherName)) "
+            + "AND (:genre = '' OR LOWER(bk.genre) = LOWER(:genre)) "
             + "AND (:year = '' OR bk.year = :year)"
-            + "AND (:author = '' OR bk.author = :author)"
+            + "AND (:author = '' OR LOWER(bk.author) = LOWER(:author))"
             + "AND (:image = '' OR bk.image = :image)"
-            + "AND (:title = '' OR bk.title = :title)"
-            + "AND (:subtitle = '' OR bk.subTitle = :subtitle)"
+            + "AND (:title = '' OR LOWER(bk.title) = LOWER(:title))"
+            + "AND (:subtitle = '' OR LOWER(bk.subTitle) = LOWER(:subtitle))"
             + "AND (:pages = 0 OR bk.pages = :pages)"
             + "AND (:isbn = '' OR bk.isbn = :isbn)")
     Page<Book> findAllBooks(@Param("publisherName") String publisher,

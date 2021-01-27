@@ -78,7 +78,7 @@ class BookControllerTest {
     @Test
     void whenFindByAllWhichExist_thenBooksIsReturned() throws Exception {
         String jsonBooks = mapper.writeValueAsString(Collections.singletonList(oneTestBook));
-        Mockito.when(mockedBookRepository.getAllBook(Mockito.any(), Mockito.any(), Mockito.any()))
+        Mockito.when(mockedBookRepository.getAllBooksMatch(Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(Collections.singletonList(oneTestBook));
 
         mvc.perform(get(API_BOOKS)

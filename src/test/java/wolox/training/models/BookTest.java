@@ -85,14 +85,14 @@ class BookTest {
 
     @Test
     public void whenGetAllBooks_thenReturnBooks() {
-        List<Book> booksFound = bookRepository.getAllBook("Bloomsbury", null, null);
+        List<Book> booksFound = bookRepository.getAllBooksMatch("Bloomsbury", null, null);
         assertNotNull(booksFound);
         assertFalse(booksFound.isEmpty());
     }
 
     @Test
     public void whenGetAllBooksThatNotExist_thenReturnError() {
-        List<Book> booksFound = bookRepository.getAllBook("monkeys", "monkeys", "monkeys");
+        List<Book> booksFound = bookRepository.getAllBooksMatch("monkeys", "monkeys", "monkeys");
         assertTrue(booksFound.isEmpty());
     }
 }

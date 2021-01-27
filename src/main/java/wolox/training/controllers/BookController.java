@@ -44,12 +44,44 @@ public class BookController {
         this.openLibraryService = openLibraryService;
     }
 
+
+    /**
+     * This method will bring all the books by the following filters
+     *
+     * @param publisher: book publisher
+     * @param genre:     book genre
+     * @param year:      year of publication of the book
+     * @param author:    author of the book
+     * @param image:     picture or book cover
+     * @param title:     title of the book
+     * @param subtitle:  book subtitle
+     * @param pages:     pages contained in the book
+     * @param isbn:      book identifier
+     * @param pageable:  object that allows us to order and paginate the query
+     * @return {@link Page<Book>}
+     */
+    @GetMapping
+    public Page<Book> findAll(
+            @RequestParam(required = false, defaultValue = "") String publisher,
+            @RequestParam(required = false, defaultValue = "") String genre,
+            @RequestParam(required = false, defaultValue = "") String year,
+            @RequestParam(required = false, defaultValue = "") String image,
+            @RequestParam(required = false, defaultValue = "") String author,
+            @RequestParam(required = false, defaultValue = "") String title,
+            @RequestParam(required = false, defaultValue = "") String subtitle,
+            @RequestParam(required = false, defaultValue = "0") Integer pages,
+            @RequestParam(required = false, defaultValue = "") String isbn,
+            Pageable pageable) {
+        return bookRepository.findAllBooks(publisher, genre, year, author, image, title, subtitle, pages,
+                isbn, pageable);
+    }
+
     /**
      * This method returns all the books stored in the database through a filter
      *
      * @return {@link List<Book>}
      */
-    @GetMapping
+    @GetMapping("/match")
     @ApiOperation(value = "Given a filter type and a param for filter, return all books", response = Book[].class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
@@ -57,10 +89,10 @@ public class BookController {
             @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 404, message = "Book not found")
     })
-    public List<Book> findAllByPublisherOrGenreOrYear(@RequestParam(name = "publisher", required = false) String publisher,
+    public List<Book> getAllBooksMatch(@RequestParam(name = "publisher", required = false) String publisher,
             @RequestParam(name = "genre", required = false) String genre,
             @RequestParam(name = "year", required = false) String year) {
-        return bookRepository.getAllBook(publisher, genre, year);
+        return bookRepository.getAllBooksMatch(publisher, genre, year);
     }
 
     /**
@@ -186,23 +218,6 @@ public class BookController {
         }
 
         return new ResponseEntity<>(bookOptional.get(), HttpStatus.OK);
-    }
-
-    @GetMapping ("/test")
-    public Page<Book> findAll(
-            @RequestParam(required = false, defaultValue = "") String publisher,
-            @RequestParam(required = false, defaultValue = "") String genre,
-            @RequestParam(required = false, defaultValue = "") String year,
-            @RequestParam(required = false, defaultValue = "") String image,
-            @RequestParam(required = false, defaultValue = "") String author,
-            @RequestParam(required = false, defaultValue = "") String title,
-            @RequestParam(required = false, defaultValue = "") String subtitle,
-            @RequestParam(required = false, defaultValue = "0") Integer pages,
-            @RequestParam(required = false, defaultValue = "") String isbn,
-            Pageable pageable) {
-        return bookRepository.findAllBooks(publisher, genre, year, author, image, title, subtitle, pages,
-                isbn, pageable);
-
     }
 
 }
