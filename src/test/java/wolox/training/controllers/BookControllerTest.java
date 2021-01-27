@@ -81,7 +81,8 @@ class BookControllerTest {
         Mockito.when(mockedBookRepository.getAllBooksMatch(Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(Collections.singletonList(oneTestBook));
 
-        mvc.perform(get(API_BOOKS)
+        String url = API_BOOKS.concat("/match");
+        mvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
