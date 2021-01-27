@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.11'
 	testCompile('org.junit.platform:junit-platform-launcher:1.7.0')
 	testCompile('org.junit.vintage:junit-vintage-engine:5.7.0')
+	testCompile("org.springframework.security:spring-security-test")
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}

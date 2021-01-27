@@ -17,19 +17,26 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
 
 @RunWith(MockitoJUnitRunner.class)
-@WebMvcTest(BookController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 class BookControllerTest {
 
     public static final String API_BOOKS = "/api/books/";
+
+    @Autowired
+    private WebApplicationContext context;
 
     @Autowired
     private MockMvc mvc;
@@ -43,6 +50,7 @@ class BookControllerTest {
 
     @BeforeEach
     void setUp() {
+
         oneTestBook = new Book();
         oneTestBook.setGenre("Fantasy");
         oneTestBook.setAuthor("John Ronald Reuel Tolkien");
@@ -66,6 +74,7 @@ class BookControllerTest {
         oneTestBookCreated.setIsbn("PR6039.O32 L6 1954, v.2");
     }
 
+    @WithMockUser
     @Test
     void whenFindByAllWhichExist_thenBooksIsReturned() throws Exception {
         String jsonBooks = mapper.writeValueAsString(Collections.singletonList(oneTestBook));
@@ -79,6 +88,7 @@ class BookControllerTest {
                 .andExpect(content().json(jsonBooks));
     }
 
+    @WithMockUser
     @Test
     public void whenFindByAuthorWhichExist_thenBookIsReturned() throws Exception {
         String jsonBook = mapper.writeValueAsString(oneTestBook);
@@ -92,6 +102,7 @@ class BookControllerTest {
                 .andExpect(content().json(jsonBook));
     }
 
+    @WithMockUser
     @Test
     public void whenFindByAuthorWhichNoExist_thenReturnNotFound() throws Exception {
         Mockito.when(mockedBookRepository.findByAuthor(Mockito.anyString())).thenThrow(BookNotFoundException.class);
@@ -103,6 +114,7 @@ class BookControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @WithMockUser
     @Test
     public void whenFindOneWhichExist_thenBookIsReturned() throws Exception {
         String jsonBook = mapper.writeValueAsString(oneTestBook);
@@ -116,6 +128,7 @@ class BookControllerTest {
                 .andExpect(content().json(jsonBook));
     }
 
+    @WithMockUser
     @Test
     public void whenCreateBook_thenBookIsReturned() throws Exception {
         String jsonBook = mapper.writeValueAsString(oneTestBook);
@@ -130,6 +143,7 @@ class BookControllerTest {
                 .andExpect(content().json(jsonBookCreated));
     }
 
+    @WithMockUser
     @Test
     public void whenDeleteBook_thenStatusOkReturned() throws Exception {
         Mockito.when(mockedBookRepository.findById(Mockito.any())).thenReturn(Optional.of(oneTestBook));
@@ -141,6 +155,7 @@ class BookControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @WithMockUser
     @Test
     public void whenUpdateBook_thenBookIsReturned() throws Exception {
         String jsonBookCreated = mapper.writeValueAsString(oneTestBookCreated);
