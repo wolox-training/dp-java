@@ -62,6 +62,7 @@ class UserControllerTest {
         oneTestUser = new User();
         oneTestUser.setUsername("daniel.delapava");
         oneTestUser.setName("Daniel De La Pava Suarez");
+        oneTestUser.setPassword("password");
         oneTestUser.setBirthDate(LocalDate.of(1989, 10, 16));
 
         oneTestBookCreated = new Book(1L);
@@ -78,6 +79,7 @@ class UserControllerTest {
         oneTestUserCreated = new User(1L);
         oneTestUserCreated.setUsername("daniel.delapava");
         oneTestUserCreated.setName("Daniel De La Pava Suarez");
+        oneTestUserCreated.setPassword("password");
         oneTestUserCreated.setBirthDate(LocalDate.of(1989, 10, 16));
         oneTestUserCreated.setBooks(new LinkedList<>(Collections.singletonList(oneTestBookCreated)));
 

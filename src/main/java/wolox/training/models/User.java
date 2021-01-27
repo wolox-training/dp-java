@@ -56,7 +56,6 @@ public class User {
     private List<Book> books = new LinkedList<>();
 
     @ApiModelProperty(notes = "The user password: are the authentication the a user", required = true)
-    @JsonProperty(access = Access.WRITE_ONLY)
     @NotNull
     private String password;
 
