@@ -188,7 +188,7 @@ public class BookController {
         return new ResponseEntity<>(bookOptional.get(), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping ("/test")
     public Page<Book> findAll(
             @RequestParam(required = false, defaultValue = "") String publisher,
             @RequestParam(required = false, defaultValue = "") String genre,
