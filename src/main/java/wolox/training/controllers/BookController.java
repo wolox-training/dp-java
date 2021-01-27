@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,7 +57,7 @@ public class BookController {
             @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 404, message = "Book not found")
     })
-    public List<Book> findAll(@RequestParam(name = "publisher", required = false) String publisher,
+    public List<Book> findAllByPublisherOrGenreOrYear(@RequestParam(name = "publisher", required = false) String publisher,
             @RequestParam(name = "genre", required = false) String genre,
             @RequestParam(name = "year", required = false) String year) {
         return bookRepository.getAllBook(publisher, genre, year);
@@ -159,7 +161,8 @@ public class BookController {
     }
 
     /**
-     * Given the isbn of a book, search the database or an external service and return the book or a book exception was not found
+     * Given the isbn of a book, search the database or an external service and return the book or a book exception was
+     * not found
      *
      * @param isbn: this is the book identification
      * @return {@link Book}
@@ -173,7 +176,8 @@ public class BookController {
             @ApiResponse(code = 403, message = "Access forbidden"),
             @ApiResponse(code = 404, message = "Book Not Found"),
     })
-    public ResponseEntity<Book> findByIsbn(@ApiParam(value = "this is the book identification") @PathVariable(name = "isbn") String isbn) {
+    public ResponseEntity<Book> findByIsbn(
+            @ApiParam(value = "this is the book identification") @PathVariable(name = "isbn") String isbn) {
         Optional<Book> bookOptional = bookRepository.findByIsbn(isbn);
 
         if (bookOptional.isEmpty()) {
@@ -182,6 +186,23 @@ public class BookController {
         }
 
         return new ResponseEntity<>(bookOptional.get(), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public Page<Book> findAll(
+            @RequestParam(required = false, defaultValue = "") String publisher,
+            @RequestParam(required = false, defaultValue = "") String genre,
+            @RequestParam(required = false, defaultValue = "") String year,
+            @RequestParam(required = false, defaultValue = "") String image,
+            @RequestParam(required = false, defaultValue = "") String author,
+            @RequestParam(required = false, defaultValue = "") String title,
+            @RequestParam(required = false, defaultValue = "") String subtitle,
+            @RequestParam(required = false, defaultValue = "0") Integer pages,
+            @RequestParam(required = false, defaultValue = "") String isbn,
+            Pageable pageable) {
+        return bookRepository.findAllBooks(publisher, genre, year, author, image, title, subtitle, pages,
+                isbn, pageable);
+
     }
 
 }
