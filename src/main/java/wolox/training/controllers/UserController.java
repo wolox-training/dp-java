@@ -55,7 +55,6 @@ public class UserController {
         this.bookRepository = bookRepository;
         this.customAuthProvider = customAuthProvider;
         this.passwordEncoder = passwordEncoder;
-        ;
     }
 
     /**

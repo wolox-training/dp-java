@@ -18,6 +18,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import wolox.training.repositories.BookRepository;
 
@@ -53,7 +56,7 @@ class BookTest {
 
     @Test
     public void whenCreateBook_thenBookIsPersisted() {
-        Book bookPersisted = bookRepository.findByAuthor("J. K. Rowling").orElse(new Book());
+        Book bookPersisted = bookRepository.findByIsbn("0-7475-3269-9").orElse(new Book());
 
         assertThat(bookPersisted.getAuthor().equals(oneTestBook.getAuthor())).isTrue();
         assertThat(bookPersisted.getPublisher().equals(oneTestBook.getPublisher())).isTrue();
@@ -72,27 +75,19 @@ class BookTest {
     }
 
     @Test
-    public void whenFindByAuthor_thenReturnBook() {
-        Optional<Book> bookFound = bookRepository.findByAuthor("J. K. Rowling");
-        assertThat(oneTestBook.equals(bookFound.get())).isTrue();
-    }
-
-    @Test
-    public void whenFindByAuthorThatNotExist_thenReturnError() {
-        Optional<Book> bookFound = bookRepository.findByAuthor("monkeys");
-        assertThat(bookFound.isPresent()).isFalse();
-    }
-
-    @Test
-    public void whenGetAllBooks_thenReturnBooks() {
-        List<Book> booksFound = bookRepository.getAllBooksMatch("Bloomsbury", null, null);
+    public void whenFindAllBooks_thenReturnBooks() {
+        Page<Book> booksFound = bookRepository
+                .findAllBooks("Bloomsbury", "", "", "", "", "", "", 0, "", PageRequest
+                        .of(0, 5, Sort.by("id")));
         assertNotNull(booksFound);
-        assertFalse(booksFound.isEmpty());
+        assertFalse(booksFound.getContent().isEmpty());
     }
 
     @Test
     public void whenGetAllBooksThatNotExist_thenReturnError() {
-        List<Book> booksFound = bookRepository.getAllBooksMatch("monkeys", "monkeys", "monkeys");
+        Page<Book> booksFound = bookRepository
+                .findAllBooks("monkeys", "", "", "", "", "", "", 0, "", PageRequest
+                        .of(0, 5, Sort.by("id")));
         assertTrue(booksFound.isEmpty());
     }
 }

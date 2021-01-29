@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -72,47 +74,6 @@ class BookControllerTest {
         oneTestBookCreated.setYear("1954");
         oneTestBookCreated.setPages(352);
         oneTestBookCreated.setIsbn("PR6039.O32 L6 1954, v.2");
-    }
-
-    @WithMockUser
-    @Test
-    void whenFindByAllWhichExist_thenBooksIsReturned() throws Exception {
-        String jsonBooks = mapper.writeValueAsString(Collections.singletonList(oneTestBook));
-        Mockito.when(mockedBookRepository.getAllBooksMatch(Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(Collections.singletonList(oneTestBook));
-
-        String url = API_BOOKS.concat("/match");
-        mvc.perform(get(url)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(jsonBooks));
-    }
-
-    @WithMockUser
-    @Test
-    public void whenFindByAuthorWhichExist_thenBookIsReturned() throws Exception {
-        String jsonBook = mapper.writeValueAsString(oneTestBook);
-        Mockito.when(mockedBookRepository.findByAuthor(oneTestBook.getAuthor())).thenReturn(Optional.of(oneTestBook));
-
-        String url = API_BOOKS.concat("author/").concat(oneTestBook.getAuthor());
-        mvc.perform(get(url)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(jsonBook));
-    }
-
-    @WithMockUser
-    @Test
-    public void whenFindByAuthorWhichNoExist_thenReturnNotFound() throws Exception {
-        Mockito.when(mockedBookRepository.findByAuthor(Mockito.anyString())).thenThrow(BookNotFoundException.class);
-
-        String url = API_BOOKS.concat("author/").concat(oneTestBook.getAuthor());
-        mvc.perform(get(url)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
     }
 
     @WithMockUser
@@ -171,5 +132,23 @@ class BookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonBookCreated));
     }
+
+    @WithMockUser
+    @Test
+    void whenFindByAllWhichExist_thenBooksIsReturned() throws Exception {
+        Page<Book> books = new PageImpl<>(Collections.singletonList(oneTestBook));
+        String jsonBooks = mapper.writeValueAsString(new PageImpl<>(Collections.singletonList(oneTestBook)));
+        Mockito.when(mockedBookRepository
+                .findAllBooks(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                        Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(books);
+
+        mvc.perform(get(API_BOOKS)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonBooks));
+    }
+
 
 }
