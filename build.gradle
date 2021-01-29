@@ -8,6 +8,14 @@ group = 'wolox'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+bootJar {
+	archiveBaseName = 'training'
+	archiveVersion = '0.0.1-SNAPSHOT'
+	manifest {
+		attributes 'Implementation-Title': 'Training', 'Implementation-Version': archiveVersion
+	}
+}
+
 repositories {
 	mavenCentral()
 }
