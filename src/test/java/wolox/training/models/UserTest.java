@@ -2,7 +2,9 @@ package wolox.training.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -16,6 +18,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import wolox.training.repositories.UserRepository;
 
@@ -92,4 +97,29 @@ class UserTest {
         Optional<User> userFound = userRepository.findByUsername("monkeys");
         assertThat(userFound.isPresent()).isFalse();
     }
+
+    @Test
+    public void whenFindAllByBirthDatesAndName_thenReturnUser() {
+        Page<User> userFound = userRepository
+                .findAllByNameIgnoreCaseContainingAndBirthdateBetween(oneTestUser.getBirthDate(),
+                        oneTestUser.getBirthDate(),
+                        oneTestUser.getName(), PageRequest.of(0, 5, Sort.by("id")));
+
+        assertThat(userFound.getTotalElements() > 0).isTrue();
+        assertFalse(userFound.get().findFirst().isEmpty());
+        assertThat(oneTestUser.equals(userFound.get().findFirst().get())).isTrue();
+    }
+
+    @Test
+    public void whenFindAllByBirthDatesAndName_thenReturnError() {
+        Page<User> userFound = userRepository
+                .findAllByNameIgnoreCaseContainingAndBirthdateBetween(oneTestUser.getBirthDate(),
+                        oneTestUser.getBirthDate(),
+                        "monkeys", PageRequest.of(0, 5, Sort.by("id")));
+
+        assertThat(userFound.getTotalElements() == 0).isTrue();
+        assertTrue(userFound.get().findFirst().isEmpty());
+    }
+
+
 }
