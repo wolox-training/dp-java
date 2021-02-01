@@ -299,8 +299,6 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-
-
     /**
      * This method obtains a list of users with some parameters
      *
