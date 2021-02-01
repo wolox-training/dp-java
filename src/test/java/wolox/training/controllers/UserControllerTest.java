@@ -21,9 +21,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import wolox.training.exceptions.UserNotFoundException;
 import wolox.training.models.Book;
@@ -32,7 +36,10 @@ import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
 
 @RunWith(MockitoJUnitRunner.class)
-@WebMvcTest(UserController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = {"classpath:application-test.properties"})
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
 class UserControllerTest {
 
     public static final String API_USERS = "/api/users/";
@@ -45,7 +52,6 @@ class UserControllerTest {
 
     @MockBean
     private BookRepository mockedBookRepository;
-
 
     private User oneTestUser;
     private User oneTestUserCreated;
@@ -60,6 +66,7 @@ class UserControllerTest {
         oneTestUser = new User();
         oneTestUser.setUsername("daniel.delapava");
         oneTestUser.setName("Daniel De La Pava Suarez");
+        oneTestUser.setPassword("password");
         oneTestUser.setBirthDate(LocalDate.of(1989, 10, 16));
 
         oneTestBookCreated = new Book(1L);
@@ -76,12 +83,13 @@ class UserControllerTest {
         oneTestUserCreated = new User(1L);
         oneTestUserCreated.setUsername("daniel.delapava");
         oneTestUserCreated.setName("Daniel De La Pava Suarez");
+        oneTestUserCreated.setPassword("password");
         oneTestUserCreated.setBirthDate(LocalDate.of(1989, 10, 16));
         oneTestUserCreated.setBooks(new LinkedList<>(Collections.singletonList(oneTestBookCreated)));
 
     }
 
-
+    @WithMockUser
     @Test
     void whenFindByAllWhichExist_thenUsersIsReturned() throws Exception {
         String jsonUsers = mapper.writeValueAsString(Collections.singletonList(oneTestUser));
@@ -94,6 +102,7 @@ class UserControllerTest {
                 .andExpect(content().json(jsonUsers));
     }
 
+    @WithMockUser
     @Test
     public void whenFindByUsernameWhichExist_thenUserIsReturned() throws Exception {
         String jsonUser = mapper.writeValueAsString(oneTestUser);
@@ -108,6 +117,7 @@ class UserControllerTest {
                 .andExpect(content().json(jsonUser));
     }
 
+    @WithMockUser
     @Test
     public void whenFindByUsernameWhichNoExist_thenReturnNotFound() throws Exception {
         Mockito.when(mockedUserRepository.findByUsername(Mockito.anyString())).thenThrow(UserNotFoundException.class);
@@ -119,6 +129,7 @@ class UserControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @WithMockUser
     @Test
     public void whenFindOneWhichExist_thenUserIsReturned() throws Exception {
         String jsonUser = mapper.writeValueAsString(oneTestUser);
@@ -132,6 +143,7 @@ class UserControllerTest {
                 .andExpect(content().json(jsonUser));
     }
 
+    @WithMockUser
     @Test
     public void whenCreateUser_thenUserIsReturned() throws Exception {
         String jsonUser = mapper.writeValueAsString(oneTestUser);
@@ -146,6 +158,7 @@ class UserControllerTest {
                 .andExpect(content().json(jsonUserCreated));
     }
 
+    @WithMockUser
     @Test
     public void whenDeleteBook_thenStatusOkReturned() throws Exception {
         Mockito.when(mockedUserRepository.findById(Mockito.any())).thenReturn(Optional.of(oneTestUser));
@@ -157,6 +170,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @WithMockUser
     @Test
     public void whenUpdateBook_thenBookIsReturned() throws Exception {
         String jsonUserCreated = mapper.writeValueAsString(oneTestUserCreated);
@@ -172,6 +186,7 @@ class UserControllerTest {
                 .andExpect(content().json(jsonUserCreated));
     }
 
+    @WithMockUser
     @Test
     public void whenAUserAddBook_thenUserIsReturned() throws Exception {
         String jsonUserCreated = mapper.writeValueAsString(oneTestUserCreated);
@@ -189,6 +204,7 @@ class UserControllerTest {
                 .andExpect(content().json(jsonUserCreated));
     }
 
+    @WithMockUser
     @Test
     public void whenAUserDeleteBook_thenUserIsReturned() throws Exception {
         String jsonUserCreated = mapper.writeValueAsString(oneTestUser);

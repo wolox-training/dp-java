@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import org.apache.commons.lang3.StringUtils;
 import wolox.training.models.constans.ErrorConstants;
+import wolox.training.models.dtos.BookInfoDTO;
 
 /**
  * Represents struct a book.
@@ -65,6 +66,18 @@ public class Book {
 
     public Book() {
         //Constructor for JPA
+    }
+
+    public Book(BookInfoDTO bookInfoDTO) {
+        this.genre = bookInfoDTO.getSubjects().get(0).getName();
+        this.author = bookInfoDTO.getAuthors().get(0).getName();
+        this.image = bookInfoDTO.getCover().getMedium();
+        this.title = bookInfoDTO.getTitle();
+        this.subTitle = bookInfoDTO.getSubtitle();
+        this.publisher = bookInfoDTO.getPublishers().get(0).getName();
+        this.year = bookInfoDTO.getPublishDate();
+        this.pages = bookInfoDTO.getNumberPages();
+        this.isbn = bookInfoDTO.getIsbn();
     }
 
     public Book(Long id) {
@@ -147,7 +160,8 @@ public class Book {
     public void setYear(String year) {
         Preconditions.checkNotNull(year, String.format(ErrorConstants.NOT_NULL, "year"));
         Preconditions.checkArgument(StringUtils.isNumeric(year), String.format(ErrorConstants.NOT_NUMERIC, "year"));
-        Preconditions.checkArgument(Integer.parseInt(year) > 0, String.format(ErrorConstants.NOT_GREATER_THAN, "year", "0"));
+        Preconditions
+                .checkArgument(Integer.parseInt(year) > 0, String.format(ErrorConstants.NOT_GREATER_THAN, "year", "0"));
 
         this.year = year;
     }
